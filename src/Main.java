@@ -41,21 +41,11 @@ public class Main {
             System.out.print("Agora a data do checkOut: ");
             checkOut = simpleDateFormat.parse(scanner.next());
 
-            //Não posso atualizar as datas caso as mesmas não sejam futuras.
-            Date agora = new Date();
+            String error = reserva.atualizarDatas(checkIn, checkOut);
 
-            if (checkIn.before(agora) || checkOut.before(agora)) {
-
-                System.out.println("Erro em sua reserva. O check-out precisa ser uma data futura.");
-
-            } else if (!checkOut.after(checkIn)) {
-
-                System.out.println("Erro em sua reserva. A data de check-out precisa ser posterior ao check-in.");
-
+            if (error != null) {
+                System.out.println("Erro em sua reserva: " + error);
             } else {
-
-                reserva.atualizarDatas(checkIn, checkOut);
-
                 System.out.println(reserva);
             }
         }
