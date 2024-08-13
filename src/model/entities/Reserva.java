@@ -1,5 +1,7 @@
 package model.entities;
 
+import model.exceptions.DomainException;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -11,6 +13,12 @@ public class Reserva {
     private Date checkOut;
 
     public Reserva(Integer numeroQt, Date checkIn, Date checkOut) {
+
+        //Tratando a data de checkout como sempre a maior que o check-in.
+        if (!checkOut.after(checkIn)) {
+            throw new DomainException("Erro em sua reserva. A data de check-out precisa ser posterior ao check-in.");
+        }
+
         this.numeroQt = numeroQt;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
@@ -41,22 +49,29 @@ public class Reserva {
         return TimeUnit.DAYS.convert(diferenca, TimeUnit.MILLISECONDS); //Convertendo mili-segundos em dias.
     }
 
-    public String atualizarDatas(Date checkIn, Date checkOut) {
+    //Logo incluímos a throws Domain Exception
+    public void atualizarDatas(Date checkIn, Date checkOut) {
 
         Date agora = new Date();
 
         if (checkIn.before(agora) || checkOut.before(agora)) {
-            return "Erro em sua reserva. O check-out precisa ser uma data futura.";
+
+            //Utiliza-se quando os argumentos que você passa para um método são inválidos.
+            //Neste caso só quero lançar a exceção
+            throw new DomainException("Erro em sua reserva. O check-out precisa ser uma data futura.");
+
         }
 
         if (!checkOut.after(checkIn)) {
-            return "Erro em sua reserva. A data de check-out precisa ser posterior ao check-in.";
+
+            //Criei minha propria exceção para assim lança-la.
+            //IllegalArgumentException: utiliza-se quando os argumentos que passamos para um método é invalido.
+            throw new DomainException("Erro em sua reserva. A data de check-out precisa ser posterior ao check-in.");
+
         }
 
         this.checkIn = checkIn;
         this.checkOut = checkOut;
-
-        return null;
     }
 
     @Override
